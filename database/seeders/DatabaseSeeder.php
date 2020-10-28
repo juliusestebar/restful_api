@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
     	 $userQuantity = 10;
     	 
     	 \App\Models\User::truncate();
+
+         \App\Models\User::flushEventListeners();
+         
          \App\Models\User::factory($userQuantity)->create();
     }
 }
