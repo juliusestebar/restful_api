@@ -27,4 +27,5 @@ Route::resource('users','UserController');
 
 Route::name('verify')->get('users/verify/{token}','UserController@verify');
 
+Route::name('resend')->get('users/{user}/resend','UserController@resend');
 //Route::post('users/{id}', 'UserController@update');
