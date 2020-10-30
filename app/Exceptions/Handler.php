@@ -7,6 +7,7 @@ use App\Traits\ApiResponser;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 class Handler extends ExceptionHandler
 {
@@ -53,6 +54,11 @@ class Handler extends ExceptionHandler
             return $this->errorResponse($e, 404);
         });
 
+        $this->renderable(function (ThrottleRequestsException $e, $request) {
+             //return $this->errorResponse('MethodNotAllowedHttpException', 404);
+            return $this->errorResponse('Too Many Attempts', 404);
+        });
+
         // if (config('app.debug')) {
         //     return $this->errorResponse($e,500);          
         // }
@@ -64,6 +70,7 @@ class Handler extends ExceptionHandler
         //HttpException
         //ModelNotFoundException
         //QueryException
+        //ThrottleRequestsException
 
         //https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
