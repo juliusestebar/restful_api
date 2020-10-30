@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	 $userQuantity = 10;
+    	 $userQuantity = 45;
     	 
     	 \App\Models\User::truncate();
 
