@@ -59,9 +59,9 @@ class Handler extends ExceptionHandler
             return $this->errorResponse('Too Many Attempts', 404);
         });
 
-        // if (config('app.debug')) {
-        //     return $this->errorResponse($e,500);          
-        // }
+        if (config('app.debug')) {
+            return $this->errorResponse($e,500);          
+        }
 
         return $this->errorResponse('Unexpected Exception. Try later',500);
         //AuthenticationException
