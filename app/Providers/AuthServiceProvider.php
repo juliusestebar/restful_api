@@ -40,6 +40,13 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
+        //http://127.0.0.1:8000/oauth/authorize/?client_id=10&redirect_uri=http://localhost&response_type=code
+
         Passport::enableImplicitGrant();
+        //http://127.0.0.1:8000/oauth/authorize/?client_id=10&redirect_uri=http://localhost&response_type=token
+
+        Passport::tokensCan([
+            'manage-application' => 'Will use your full name, facebook and contact number'
+        ]);
     }
 }
