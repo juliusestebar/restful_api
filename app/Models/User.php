@@ -11,9 +11,11 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Transformers\UserTransformer;
 
+use Laravel\Passport\HasApiTokens;
+
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,SoftDeletes;
+    use HasFactory, Notifiable,SoftDeletes,HasApiTokens;
 
     const VERIFIED_USER = '1';
     const UNVERIFIED_USER = '0';

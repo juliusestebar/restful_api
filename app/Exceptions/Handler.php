@@ -8,6 +8,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 
 class Handler extends ExceptionHandler
 {
@@ -55,13 +58,21 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (ThrottleRequestsException $e, $request) {
-             //return $this->errorResponse('MethodNotAllowedHttpException', 404);
             return $this->errorResponse('Too Many Attempts', 404);
         });
 
-        if (config('app.debug')) {
-            return $this->errorResponse($e,500);          
-        }
+        $this->renderable(function (AuthenticationException $e, $request) {
+            return $this->errorResponse('Unauthenticated', 401);
+        });
+        
+        $this->renderable(function (QueryException $e, $request) {
+             //return $this->errorResponse('MethodNotAllowedHttpException', 404);
+            return $this->errorResponse($e, 404);
+        });
+
+        // if (config('app.debug')) {
+        //     return $this->errorResponse($e,500);          
+        // }
 
         return $this->errorResponse('Unexpected Exception. Try later',500);
         //AuthenticationException
@@ -71,7 +82,7 @@ class Handler extends ExceptionHandler
         //ModelNotFoundException
         //QueryException
         //ThrottleRequestsException
-
+        //RouteNotFoundException
         //https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
     }

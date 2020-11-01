@@ -8,9 +8,19 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserCreated;
+use Illuminate\Support\Facades\Validator;
+//use Illuminate\Session\Middleware\AuthenticateSession;
 
 class UserController extends ApiController
 {
+    public function __construct()
+    {
+
+        $this->middleware('client.credentials')->only(['store','resend']);
+        $this->middleware('auth:api')->except(['store','resend','verify']);
+
+        //parent::__construct();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,13 +42,23 @@ class UserController extends ApiController
      */
     public function store(Request $request)
     {
-        $rules = [
+        // $rules = [
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'password' => 'required|min:6|confirmed',
+        // ];
+
+        // $this->validate($request,$rules);
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-        ];
+        ]);
 
-        $this->validate($request,$rules);
+        if ($validator->fails()) {
+          return $this->errorResponse($validator->errors(),422);
+        }
 
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
@@ -83,13 +103,24 @@ class UserController extends ApiController
        //$user = User::findOrFail($id);
         //dd($request->name);
 
-        $rules = [
+        // $rules = [
+        //     'email' => 'email|unique:users,email,' . $user->id,
+        //     'password' => 'min:6|confirmed',
+        //     'admin' => 'in:' . User::ADMIN_USER . ',' . User::REGULAR_USER,
+        // ];
+
+        $validator = Validator::make($request->all(), [
             'email' => 'email|unique:users,email,' . $user->id,
             'password' => 'min:6|confirmed',
             'admin' => 'in:' . User::ADMIN_USER . ',' . User::REGULAR_USER,
-        ];
+        ]);
 
-        $this->validate($request,$rules);
+        if ($validator->fails()) {
+          return $this->errorResponse($validator->errors(),422);
+        }
+        // if ($validator->success()) {
+        //   return $this->errorResponse($validator->errors(),422);
+        // }
 
         if($request->has('name')){
             $user->name = $request->name;
